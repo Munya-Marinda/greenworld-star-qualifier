@@ -1,6 +1,12 @@
 <?php
-// $PROJECT_DIR = "https://munyathedev.co.za/gw-design";
-$PROJECT_DIR = "http://localhost/gw-design";
+$PROJECT_DIR = "http://localhost/star-qualifier";
+
+if (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false) {
+  $PROJECT_DIR = "http://localhost/star-qualifier";
+} else {
+  $PROJECT_DIR = "https://greenworld.munyathedev.com/posters/star-qualifier";
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -10,7 +16,7 @@ $PROJECT_DIR = "http://localhost/gw-design";
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GW Designer</title>
+  <title>Greenworld | Star Qualifier Poster Maker</title>
 
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" />
@@ -22,38 +28,27 @@ $PROJECT_DIR = "http://localhost/gw-design";
   </div>
   <nav class="nav_parent">
     <!-- <h4>Greenworld Poster Maker</h4> -->
-    <div style="width: 100%; background-color: white; max-height: 30px">
-      <a href=<?php echo $PROJECT_DIR; ?>>
-        <img src="./assets/design/logo.svg" style="height: 30px" alt="GW Designer Logo" />
+    <div class="nav_parent_container">
+      <a style="width: 50%;" href=<?php echo $PROJECT_DIR; ?>>
+        <img src="./assets/design/logo.svg" style="height: 70px" alt="GW Designer Logo" />
       </a>
-    </div>
-    <div class="footer_social_media_links_container">
-      <div class="footer_social_media_links_parent">
-        <span class="footer_author" style="margin: 0px 5px 0px 10px">
-          <a href="https://munya-dev.vercel.app/" target="_blank" style="text-decoration: none; color: white !important">
-            <b>by Munya The Dev</b>
-          </a>
-        </span>
-        <div class="footer_social_media_links" style="margin-right: 10px">
-          <span>
-            <a href="https://www.instagram.com/munyadesign_/" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-instagram"></i></a>
-          </span>
-          <span>
-            <a href="https://www.facebook.com/MunyaDesign" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-facebook"></i></a>
-          </span>
-          <span>
-            <a href="https://play.google.com/store/apps/dev?id=9171087412603231862" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-google"></i></a>
-          </span>
-          <span>
-            <a href="https://www.tiktok.com/@munyathedev" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-tiktok"></i></a>
-          </span>
-        </div>
+
+      <div class="nav_parent_container_text_container">
+        <span style="text-align: right; margin-right: 15px">Greenworld Star Qualifier</span>
       </div>
     </div>
   </nav>
 
   <main class="app_parent">
     <main class="app_container">
+      <section id="section_0">
+        <br>
+        <h2 style="padding: 0px 30px; text-align: center;">This is the poster you're about to create.</h2>
+        <br>
+        <img src="./assets/templates/template-preview-1.png" id="previewTemplateImage" alt="Preview Image" style="max-width: 330px" />
+        <br>
+        <button type="submit" id="continueButton">Continue</button>
+      </section>
       <section id="section_1">
         <h2 style="padding: 0px 30px; text-align: center;">Enter Your Details For The Poster</h2>
         <p id="formSubmitMessage"></p>
@@ -69,7 +64,7 @@ $PROJECT_DIR = "http://localhost/gw-design";
         <input type="text" class="text_input_1" id="contact_number_input" name="contact_number_input" placeholder="Contact Number" />
         <br />
         <br />
-        <label class="text_input_label_1" for="contact_number_input">Number of Star you've been promoted to.</label>
+        <label class="text_input_label_1" for="contact_number_input">Enter the number of star(s) you've been promoted to.</label>
         <input type="number" class="text_input_1" id="promotion_star_level_input" name="promotion_star_level_input" placeholder="1" value="1" min="1" max="8" />
         <br />
         <button type="submit" id="details_next_button">Next</button>
@@ -81,7 +76,7 @@ $PROJECT_DIR = "http://localhost/gw-design";
         <span class="text_input_label_1" style="text-align: center">Choose a square or 1:1 ratio image.</span>
 
         <form id="uploadForm" enctype="multipart/form-data">
-          <input type="file" id="imageInput" accept="image/*" style="width: 70%" class="upload_form_file_input" />
+          <input name="image" type="file" id="imageInput" accept="image/*" style="width: 70%; display: none" class="upload_form_file_input" />
           <div id="changeUploadedImage">
             <br />
             <span id="changeUploadedImage_thisishow">This is how your image will be cropped</span>
@@ -129,7 +124,7 @@ $PROJECT_DIR = "http://localhost/gw-design";
     <div class="footer_social_media_links_container">
       <div class="footer_social_media_links_parent">
         <span class="footer_author" style="margin: 0px 5px 0px 10px">
-          <a href="https://munya-dev.vercel.app/" target="_blank" style="text-decoration: none; color: white !important">
+          <a href="https://www.munyathedev.com/" target="_blank" style="text-decoration: none; color: white !important">
             <b>Munya The Dev</b>
           </a>
         </span>

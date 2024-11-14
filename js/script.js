@@ -1,10 +1,10 @@
 let image_cropped = false;
 
 // const PROJECT_DIR = "https://production.endpoint.com";
-let PROJECT_DIR = "http://localhost/gw-design";
+let PROJECT_DIR = "http://localhost/star-qualifier";
 
 if (window?.location?.href?.indexOf("localhost") != -1) {
-  PROJECT_DIR = "http://localhost/gw-design";
+  PROJECT_DIR = "http://localhost/star-qualifier";
 } else {
   PROJECT_DIR = "https://greenworld.munyathedev.com/posters/star-qualifier";
 }
@@ -14,38 +14,48 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("page_loading").style.display = "none";
   }, 500);
 
-  // INPUTS START HERE
-  const imageInput = document.getElementById("imageInput");
-  const full_name_input = document.getElementById("full_name_input");
-  const user_email_input = document.getElementById("user_email_input");
-  const contact_number_input = document.getElementById("contact_number_input");
-  const promotion_star_level_input = document.getElementById(
-    "promotion_star_level_input"
-  );
-  // INPUTS END HERE
-  const page_loading = document.getElementById("page_loading");
-  const previewUserImage = document.getElementById("previewUserImage");
-  const previewUserImageContainer = document.getElementById(
-    "previewUserImageContainer"
-  );
-  const upload_image_next_button = document.getElementById(
-    "upload_image_next_button"
-  );
-  const uploadFormButton = document.getElementById("uploadFormButton");
-  const details_next_button = document.getElementById("details_next_button");
-  const changeUploadedImage = document.getElementById("changeUploadedImage");
-  const uploadResult = document.getElementById("uploadResult");
-  const uploadMessage = document.getElementById("uploadMessage");
-  const imageDisplay = document.getElementById("imageDisplay");
-  const processedImage = document.getElementById("processedImage");
-  const downloadButton = document.getElementById("downloadButton");
-  const changeUploadedImage_change = document.getElementById(
-    "changeUploadedImage_change"
-  );
+  const showMessage = (message) => {
+    uploadResult.style.display = "flex";
+    uploadMessage.textContent = message;
+    imageDisplay.style.display = "none";
+  };
 
-  uploadFormButton.addEventListener("click", async function (event) {
-    event.preventDefault();
+  const showProcessedImage = (imageData) => {
+    // Convert base64 image data to blob
+    const byteCharacters = atob(imageData);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], {
+      type: "image/jpeg",
+    });
 
+    // Display the image
+    const imageUrl = URL.createObjectURL(blob);
+    imageDisplay.style.display = "flex";
+    processedImage.src = imageUrl;
+    processedImage.style.width = "320px";
+    processedImage.style.boxShadow = "0px 0px 13px 0px black";
+    //
+    document.getElementById("section_1").style.display = "none";
+    document.getElementById("section_2").style.display = "none";
+
+    // Update download link to allow downloading the image
+    downloadButton.href = imageUrl;
+    downloadButton.download = `munyathedev-${getFormattedDateTime()}.jpg`; // Set the name of the downloaded image file
+    setTimeout(() => {
+      page_loading.style.display = "none";
+    }, 1000);
+  };
+
+  const showSuccessMessage = (message) => {
+    showMessage(message);
+  };
+
+  // File upload handler
+  const handleFileUpload = async () => {
     if (previewUserImage.src === "./assets/design/user-icon.svg") {
       showMessage("Can't use default profile picture.");
       return;
@@ -99,8 +109,8 @@ document.addEventListener("DOMContentLoaded", function () {
         throw new Error("Failed to upload image.");
       }
 
-      const data = await response.json();
       // const data = await response.text();
+      const data = await response.json();
       // console.log("data", data);
       // return false;
 
@@ -113,15 +123,13 @@ document.addEventListener("DOMContentLoaded", function () {
         showMessage(data.message || "Failed to process image.");
       }
     } catch (error) {
-      console.error("data >> ", tempResponse);
+      // console.error("data >> ", tempResponse);
       showMessage("Error: " + error.message + JSON.stringify(tempResponse));
       page_loading.style.display = "none";
     }
-  });
+  };
 
-  imageInput.addEventListener("change", function (event) {
-    //   console.log("imageInput", imageInput.value);
-
+  const loadCroppedUserImage = () => {
     const file = imageInput.files[0];
     if (file) {
       const reader = new FileReader();
@@ -136,15 +144,58 @@ document.addEventListener("DOMContentLoaded", function () {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  // INPUTS START HERE
+  const imageInput = document.getElementById("imageInput");
+  const full_name_input = document.getElementById("full_name_input");
+  const user_email_input = document.getElementById("user_email_input");
+  const contact_number_input = document.getElementById("contact_number_input");
+  const promotion_star_level_input = document.getElementById(
+    "promotion_star_level_input"
+  );
+  // INPUTS END HERE
+  const page_loading = document.getElementById("page_loading");
+  const previewUserImage = document.getElementById("previewUserImage");
+  const previewUserImageContainer = document.getElementById(
+    "previewUserImageContainer"
+  );
+  const upload_image_next_button = document.getElementById(
+    "upload_image_next_button"
+  );
+
+  const uploadFormButton = document.getElementById("uploadFormButton");
+  const details_next_button = document.getElementById("details_next_button");
+  const changeUploadedImage = document.getElementById("changeUploadedImage");
+  const uploadResult = document.getElementById("uploadResult");
+  const uploadMessage = document.getElementById("uploadMessage");
+  const imageDisplay = document.getElementById("imageDisplay");
+  const processedImage = document.getElementById("processedImage");
+  const downloadButton = document.getElementById("downloadButton");
+  const continueButton = document.getElementById("continueButton");
+
+  const changeUploadedImage_change = document.getElementById(
+    "changeUploadedImage_change"
+  );
+
+  uploadFormButton.addEventListener("click", async function (event) {
+    event.preventDefault();
+    await handleFileUpload();
+  });
+
+  imageInput.addEventListener("change", function (event) {
+    // console.log("imageInput", imageInput.value);
+    loadCroppedUserImage();
   });
 
   changeUploadedImage_change.addEventListener("click", function (event) {
-    console.log("changeUploadedImage_change");
+    // console.log("changeUploadedImage_change");
     previewUserImage.src = "./assets/design/user-icon.svg";
     imageInput.value = null;
-    imageInput.style.display = "block";
     changeUploadedImage.style.display = "none";
     uploadFormButton.style.display = "none";
+    imageInput.click();
+    loadCroppedUserImage();
   });
 
   details_next_button.addEventListener("click", function (event) {
@@ -159,44 +210,15 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("section_1").style.display = "flex";
   });
 
-  function showMessage(message) {
-    uploadResult.style.display = "flex";
-    uploadMessage.textContent = message;
-    imageDisplay.style.display = "none";
-  }
+  previewUserImageContainer.addEventListener("click", async function (event) {
+    imageInput?.click();
+  });
 
-  function showSuccessMessage(message) {
-    showMessage(message);
-  }
-
-  function showProcessedImage(imageData) {
-    // Convert base64 image data to blob
-    const byteCharacters = atob(imageData);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], {
-      type: "image/jpeg",
-    });
-
-    // Display the image
-    const imageUrl = URL.createObjectURL(blob);
-    imageDisplay.style.display = "flex";
-    processedImage.src = imageUrl;
-    processedImage.style.width = "320px";
-    //
-    document.getElementById("section_1").style.display = "none";
-    document.getElementById("section_2").style.display = "none";
-
-    // Update download link to allow downloading the image
-    downloadButton.href = imageUrl;
-    downloadButton.download = `munyathedev-${getFormattedDateTime()}.jpg`; // Set the name of the downloaded image file
-    setTimeout(() => {
-      page_loading.style.display = "none";
-    }, 1000);
-  }
+  continueButton.addEventListener("click", async function (event) {
+    // console.log("Contining...");
+    document.getElementById("section_0").style.display = "none";
+    document.getElementById("section_1").style.display = "flex";
+  });
 });
 
 function getFormattedDateTime() {

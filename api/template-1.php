@@ -8,7 +8,8 @@ function CreateFinalImage(
     $full_name = "",
     $user_email = "",
     $contact_number_input = "",
-    $promotion_star_level = ""
+    $promotion_star_level = "",
+    $uploadedFileName = "",
 ) {
     // Path to the base image and watermark image
     $baseImagePath = '../assets/templates/template-1.png';
@@ -173,7 +174,8 @@ function CreateFinalImage(
 
 
     // Generate a datetime string for the filename
-    $img_name_datetime = date('Ymd_His') . '.png'; // Format: YYYYMMDD_HHMMSS
+    $img_name_datetime = $uploadedFileName;
+    // $img_name_datetime = date('Ymd_His') . '.png'; // Format: YYYYMMDD_HHMMSS
 
     // Define the path to save the resulting image, including the datetime in the filename
     $resultImagePath = '../assets/created-images/' . $img_name_datetime;

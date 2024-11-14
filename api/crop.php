@@ -8,6 +8,8 @@ include_once("./template-1.php");
 // Check if a file was uploaded
 if ($_FILES['image']['error'] === UPLOAD_ERR_OK) {
 
+    $debug = [];
+
     $user_email_input = "{Email}";
     $promotion_star_level_input = 1;
     $full_name_input = "{Full Name}";
@@ -34,9 +36,29 @@ if ($_FILES['image']['error'] === UPLOAD_ERR_OK) {
         exit;
     }
 
-    // Set upload directory and file path
-    $uploadDir = '../assets/created-images/'; // Adjust the directory path as per your server configuration
-    $uploadedFile = $uploadDir . basename($_FILES['image']['name']);
+    $uploadDir = '../assets/user-images/';
+    $uploadedFileOld = $uploadDir . basename($_FILES['image']['name']);
+    $uploadedFile = $uploadedFileOld;
+
+
+
+
+
+    $originalFileName = $_FILES['image']['name'];
+    $fileExtension = pathinfo($originalFileName, PATHINFO_EXTENSION);
+    $uploadedFileName = formatFileName($full_name_input) . "." . $fileExtension;
+    $uploadedFile = $uploadDir . $uploadedFileName;
+
+
+    // $debug['new_name'] = $uploadedFile;
+
+
+
+
+
+
+
+
 
     // Move uploaded file to upload directory
     if (!move_uploaded_file($_FILES['image']['tmp_name'], $uploadedFile)) {
@@ -100,12 +122,17 @@ if ($_FILES['image']['error'] === UPLOAD_ERR_OK) {
                 $full_name_input,
                 $user_email_input,
                 $contact_number_input,
-                $promotion_star_level_input
+                $promotion_star_level_input,
+                $uploadedFileName
             );
 
-
             header('Content-Type: application/json');
-            echo json_encode(['success' => true, 'message' => 'Image processed successfully.', 'imageData' => $mergedImage]);
+            echo json_encode([
+                'success' => true,
+                // 'debug' => $debug,
+                'message' => 'Image processed successfully.',
+                'imageData' => $mergedImage,
+            ]);
 
             // Clean up resources
             imagedestroy($source);
@@ -134,3 +161,18 @@ if ($_FILES['image']['error'] === UPLOAD_ERR_OK) {
     exit;
 }
 
+
+function formatFileName($fullName)
+{
+    // Get the current date in the format YYYYMMDD
+    $date = date('Ymd_His');
+
+    // Remove any non-alphanumeric characters, then replace spaces with underscores
+    $cleanedName = preg_replace('/[^a-zA-Z0-9\s]/', '', $fullName);
+    $cleanedName = str_replace(' ', '_', $cleanedName);
+
+    // Format the filename as date_name_name
+    $fileName = "{$date}_{$cleanedName}";
+
+    return strtolower($fileName); // Convert to lowercase for consistency
+}
